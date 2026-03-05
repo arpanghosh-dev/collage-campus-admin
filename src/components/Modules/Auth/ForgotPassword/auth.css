@@ -1,10 +1,11 @@
-@import '../../Index.css';
+@import '../../../../Index.css';
 
 /* ============ Login Page ============= */
 .log-reg-info-lt h3 {
   font-size: 40px;
   color: #fff;
 }
+
 .log-Reg-Wrap {
   background: var(--clr-white);
 }
@@ -36,6 +37,7 @@
 .log-Reg-Wrap .logoReg-Bg .log-reg-lt .log-reg-info-lt .text-logo {
   margin: 0 0 40px;
 }
+
 .log-Reg-Wrap .logoReg-Bg .log-reg-lt .log-reg-info-lt .text-logo img {
   margin: auto;
 }
@@ -43,16 +45,19 @@
 .log-Reg-Wrap .logoReg-Bg .log-reg-lt .log-reg-info-lt p {
   color: var(--clr-white);
 }
+
 .logright-content .log-copyrht {
   position: absolute;
   bottom: 15px;
   left: 0;
   right: 0;
 }
+
 .log-Reg-Right {
   padding: 40px 15px;
   text-align: center;
 }
+
 .logright-content {
   position: relative;
   padding-bottom: 46px;
@@ -65,9 +70,11 @@
   margin: 0 auto 60px;
   max-width: 410px;
 }
+
 .log-Reg-Right .logo-log-Reg img {
   margin: auto;
 }
+
 .log-Reg-Right .logo-log-Reg p {
   color: var(--clr-accent-blue);
   padding-top: 30px;
@@ -76,10 +83,12 @@
 .log-Reg-Right .heading-block {
   padding: 0 0 35px;
 }
+
 .log-Reg-Right .heading-block p {
   color: var(--clr-gray);
   font-size: var(--f-size-S);
 }
+
 .log-Reg-Right .form-main {
   margin: 0 auto;
   max-width: 590px;
@@ -150,6 +159,7 @@
   left: -7px;
   border-radius: 50%;
 }
+
 .forgot-wrap {
   align-items: center;
   justify-content: space-between;
@@ -159,14 +169,17 @@
 .forgot-wrap .form-group.mb-5 {
   margin-bottom: 0;
 }
+
 .reset-card.school-profile-wrap {
   max-width: 1200px;
 }
+
 .form-main .right-wrap a {
   font-weight: 700;
   text-decoration: underline;
   color: #0567a6;
 }
+
 .log-copyrht a {
   color: #05a0bf;
 }

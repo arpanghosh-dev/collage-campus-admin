@@ -1,15 +1,15 @@
 import React from 'react';
 import './auth.css';
 
-import TextLogo from '../../assets/old_images/digikala.svg';
-import LogoWithText from '../../assets/old_images/digikala.svg';
+import TextLogo from '../../../../assets/old_images/digikala.svg';
+import LogoWithText from '../../../../assets/old_images/digikala.svg';
 
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 
-import FormField from '../Common/form/FormField';
-import CustomButton from '../Common/custombutton/CustomButton';
+import FormField from '../../../Common/form/FormField';
+import CustomButton from '../../../Common/custombutton/CustomButton';
 import { Link, useNavigate } from 'react-router-dom';
 
 interface FormValues {
