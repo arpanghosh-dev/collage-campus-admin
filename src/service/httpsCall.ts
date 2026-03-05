@@ -1,12 +1,12 @@
 import axios from "axios";
 
+const baseURL = import.meta.env.VITE_BASE_URL;
+
 axios.interceptors.request.use(async (config) => {
-  config.baseURL = "https://admin-panel-79c71-default-rtdb.europe-west1.firebasedatabase.app";
-  let token = "";
+  config.baseURL = baseURL;
+  const token = localStorage.getItem("accessToken");
   if (token && !config.headers.Authorization) {
-    config.headers.Authorization = `${token}`;
-  } else if (axios.defaults.headers.common.Authorization) {
-    config.headers.common.Authorization = axios.defaults.headers.common;
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
@@ -15,26 +15,43 @@ axios.interceptors.request.use(async (config) => {
  * *axios response configs
  */
 axios.interceptors.response.use(
-  async (reuslt) => {
-    if (reuslt) {
-      return reuslt as any; // eslint-disable-line
-    }
-    return null;
+  (response) => {
+    return response;
   },
   async (error) => {
-    const expectedErrorRefreshToken =
-      error.response && error.response.status === 401;
+    const originalRequest = error.config;
 
-    if (expectedErrorRefreshToken) {
-      // Handle refresh token
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const refreshToken = localStorage.getItem("refreshToken");
+
+      if (refreshToken) {
+        try {
+          const response = await axios.post(`${baseURL}/auth/refresh`, {
+            refreshToken,
+          });
+
+          if (response.status === 200 || response.status === 201) {
+            const { tokens } = response.data;
+            localStorage.setItem("accessToken", tokens.access.token);
+            localStorage.setItem("refreshToken", tokens.refresh.token);
+
+            axios.defaults.headers.common["Authorization"] = `Bearer ${tokens.access.token}`;
+            originalRequest.headers["Authorization"] = `Bearer ${tokens.access.token}`;
+
+            return axios(originalRequest);
+          }
+        } catch (refreshError) {
+          localStorage.clear();
+          window.location.href = "/login";
+          return Promise.reject(refreshError);
+        }
+      } else {
+        localStorage.clear();
+        window.location.href = "/login";
+      }
     }
 
-    // const expectedError =
-    //   error.response &&
-    //   error.response.status >= 400 &&
-    //   error.response.status <= 500;
-    // if (expectedError) {
-    // }
     return Promise.reject(error);
   }
 );

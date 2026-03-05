@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import Login from "../pages/Login";
+import Login from "../Page/Auth/Login";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 
