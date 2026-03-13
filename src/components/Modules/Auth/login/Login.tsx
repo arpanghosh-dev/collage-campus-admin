@@ -4,53 +4,17 @@ import './auth.css';
 import TextLogo from '../../../../assets/old_images/digikala.svg';
 import LogoWithText from '../../../../assets/old_images/digikala.svg';
 
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-
+import useLogin from './useLogin';
 import FormField from '../../../Common/form/FormField';
 import CustomButton from '../../../Common/custombutton/CustomButton';
-import { Link, useNavigate } from 'react-router-dom';
-
-interface LoginFormValues {
-  email: string;
-  password: string;
-  rememberMe: boolean;
-}
-
-const initialValues: LoginFormValues = {
-  email: '',
-  password: '',
-  rememberMe: false,
-};
-
-const loginSchema = Yup.object().shape({
-  email: Yup.string().trim().email('Enter a valid email address').required('Email is required'),
-  password: Yup.string()
-    .trim()
-    .min(6, 'Password must be at least 6 characters')
-    .required('Password is required'),
-  rememberMe: Yup.boolean().required().default(false),
-});
+import { Link } from 'react-router-dom';
 
 const Login: React.FC = () => {
-  const navigate = useNavigate();
-
+  const { formMethods, loading, onSubmit } = useLogin();
   const {
     register,
-    handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormValues>({
-    defaultValues: initialValues,
-    resolver: yupResolver(loginSchema),
-    mode: 'onTouched',
-  });
-
-  const onSubmit: SubmitHandler<LoginFormValues> = (data) => {
-    // Simulate login logic
-    console.log('Login data:', data);
-    navigate('/dashboard');
-  };
+  } = formMethods;
 
   return (
     <section className="log-Reg-Wrap">
@@ -85,7 +49,7 @@ const Login: React.FC = () => {
               </p>
             </div>
             <div className="form-main">
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form onSubmit={onSubmit}>
                 <FormField
                   label="Email"
                   name="email"
@@ -122,10 +86,11 @@ const Login: React.FC = () => {
                 </div>
                 <div className="full-width">
                   <CustomButton
-                    label="Login"
+                    label={loading ? 'Logging in...' : 'Login'}
                     variant="contained"
                     className="btn full-btn"
                     type="submit"
+                    disabled={loading}
                   />
                 </div>
               </form>
@@ -133,7 +98,7 @@ const Login: React.FC = () => {
           </div>
           <div className="log-copyrht">
             <p>
-              ©2025 <Link to={''}>Test</Link>, All Rights Reserved.
+              ©2026 <Link to={''}>Test</Link>, All Rights Reserved.
             </p>
           </div>
         </div>

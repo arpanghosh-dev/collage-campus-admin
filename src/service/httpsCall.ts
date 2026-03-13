@@ -16,28 +16,29 @@ axios.interceptors.request.use(async (config) => {
  */
 axios.interceptors.response.use(
   (response) => {
-    return response;
+    return response.data;
   },
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url?.includes("/auth/refresh")) {
       originalRequest._retry = true;
       const refreshToken = localStorage.getItem("refreshToken");
 
       if (refreshToken) {
         try {
+          // Use global axios for the refresh call to avoid the interceptor that returns .data
           const response = await axios.post(`${baseURL}/auth/refresh`, {
             refreshToken,
           });
 
           if (response.status === 200 || response.status === 201) {
-            const { tokens } = response.data;
-            localStorage.setItem("accessToken", tokens.access.token);
-            localStorage.setItem("refreshToken", tokens.refresh.token);
+            const { accessToken, refreshToken: newRefreshToken } = response.data.data;
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("refreshToken", newRefreshToken);
 
-            axios.defaults.headers.common["Authorization"] = `Bearer ${tokens.access.token}`;
-            originalRequest.headers["Authorization"] = `Bearer ${tokens.access.token}`;
+            axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+            originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
 
             return axios(originalRequest);
           }

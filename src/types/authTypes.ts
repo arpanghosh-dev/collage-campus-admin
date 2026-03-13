@@ -19,22 +19,27 @@ export interface ResetPasswordRequest {
     password: string;
 }
 
+export interface ForgotPasswordResponse {
+    code: number;
+    success: boolean;
+    message: string;
+}
+
+export interface ResetPasswordResponse {
+    code: number;
+    success: boolean;
+    message: string;
+}
+
 export interface AuthResponse {
-    tokens: {
-        access: {
-            token: string;
-            expires: string;
-        };
-        refresh: {
-            token: string;
-            expires: string;
-        };
-    };
-    user: {
-        id: string;
-        email: string;
-        name: string;
-        role: string;
-        isEmailVerified: boolean;
+    code: number;
+    success: boolean;
+    message: string;
+    data: {
+        accessToken: string;
+        refreshToken: string;
+        user: any;
     };
 }
+
+

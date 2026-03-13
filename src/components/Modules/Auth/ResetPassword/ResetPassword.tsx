@@ -1,66 +1,31 @@
 import React from 'react';
 import './auth.css';
-
 import TextLogo from '../../../../assets/old_images/digikala.svg';
 import LogoWithText from '../../../../assets/old_images/digikala.svg';
-
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-
+import useResetPassword from './useResetPassword';
 import FormField from '../../../Common/form/FormField';
 import CustomButton from '../../../Common/custombutton/CustomButton';
-import { Link, useNavigate } from 'react-router-dom';
-
-interface FormValues {
-  otp: string;
-  password: string;
-  confirmPassword: string;
-}
-
-const initialValues: FormValues = {
-  otp: '',
-  password: '',
-  confirmPassword: '',
-};
-
-const resetPasswordSchema = Yup.object().shape({
-  otp: Yup.string()
-    .required('OTP is required')
-    .length(4, 'OTP must be exactly 4 digits')
-    .test('is-numeric', 'OTP must be number', (value) => /^\d+$/.test(value || '')),
-  password: Yup.string()
-    .trim()
-    .min(8, 'Password must be at least 8 characters')
-    .max(15, 'Password must be at most 15 characters')
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,15}$/,
-      'Password must contain at least one uppercase letter, one lowercase letter, and one special character'
-    )
-    .required('Password is required'),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref('password')], 'Passwords do not match')
-    .required('Please confirm your password'),
-});
+import { Link } from 'react-router-dom';
 
 const ResetPassword: React.FC = () => {
-  const navigate = useNavigate();
-
+  const { formMethods, loading, onSubmit, resetToken } = useResetPassword();
   const {
     register,
-    handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>({
-    defaultValues: initialValues,
-    resolver: yupResolver(resetPasswordSchema),
-    mode: 'onTouched',
-  });
+  } = formMethods;
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    // You can add your API call here
-    console.log(data);
-    navigate('/login');
-  };
+  if (!resetToken) {
+
+    // return (
+    //   <div className="flex items-center justify-center min-h-screen">
+    //     <div className="text-center">
+    //       <h1 className="text-2xl font-bold text-red-500">Invalid or Missing Token</h1>
+    //       <p className="mt-2 text-gray-600">Please use the link sent to your email.</p>
+    //       <Link to="/login" className="mt-4 inline-block text-blue-500 underline">Go to Login</Link>
+    //     </div>
+    //   </div>
+    // );
+  }
 
   return (
     <section className="log-Reg-Wrap">
@@ -93,22 +58,12 @@ const ResetPassword: React.FC = () => {
               </p>
             </div>
             <div className="form-main">
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form onSubmit={onSubmit}>
                 <FormField
-                  label="Enter OTP"
-                  name="otp"
-                  type="text"
-                  placeholder="1234"
-                  required
-                  register={register('otp')}
-                  error={errors.otp?.message}
-                />
-
-                <FormField
-                  label="Password"
+                  label="New Password"
                   name="password"
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder="Enter your new password"
                   required
                   register={register('password')}
                   error={errors.password?.message}
@@ -118,7 +73,7 @@ const ResetPassword: React.FC = () => {
                   label="Confirm Password"
                   name="confirmPassword"
                   type="password"
-                  placeholder="Confirm your password"
+                  placeholder="Confirm your new password"
                   required
                   register={register('confirmPassword')}
                   error={errors.confirmPassword?.message}
@@ -126,10 +81,11 @@ const ResetPassword: React.FC = () => {
 
                 <div className="full-width">
                   <CustomButton
-                    label="Reset Password"
+                    label={loading ? "Resetting..." : "Reset Password"}
                     variant="contained"
                     className="btn full-btn"
                     type="submit"
+                    disabled={loading}
                   />
                 </div>
               </form>

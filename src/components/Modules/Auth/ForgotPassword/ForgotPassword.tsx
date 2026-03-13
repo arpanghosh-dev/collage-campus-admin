@@ -1,46 +1,18 @@
 import React from 'react';
 import './auth.css';
-
 import TextLogo from '../../../../assets/old_images/digikala.svg';
 import LogoWithText from '../../../../assets/old_images/digikala.svg';
-
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-
+import useForgotPassword from './useForgotPassword';
 import FormField from '../../../Common/form/FormField';
 import CustomButton from '../../../Common/custombutton/CustomButton';
-import { Link, useNavigate } from 'react-router-dom';
-
-interface FormValues {
-  email: string;
-}
-
-const initialValues: FormValues = {
-  email: '',
-};
-
-const forgotPasswordSchema = Yup.object().shape({
-  email: Yup.string().email('Enter a valid email address').required('Email is required'),
-});
+import { Link } from 'react-router-dom';
 
 const ForgotPassword: React.FC = () => {
-  const navigate = useNavigate();
-
+  const { formMethods, loading, onSubmit } = useForgotPassword();
   const {
     register,
-    handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>({
-    defaultValues: initialValues,
-    resolver: yupResolver(forgotPasswordSchema),
-    mode: 'onTouched',
-  });
-
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    // You can handle API call here
-    navigate('/reset-password');
-  };
+  } = formMethods;
 
   return (
     <section className="log-Reg-Wrap">
@@ -73,7 +45,7 @@ const ForgotPassword: React.FC = () => {
               </p>
             </div>
             <div className="form-main">
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form onSubmit={onSubmit}>
                 <FormField
                   label="Email"
                   name="email"
@@ -85,10 +57,11 @@ const ForgotPassword: React.FC = () => {
                 />
                 <div className="full-width">
                   <CustomButton
-                    label="Proceed"
+                    label={loading ? "Processing..." : "Proceed"}
                     variant="contained"
                     className="btn full-btn"
                     type="submit"
+                    disabled={loading}
                   />
                 </div>
               </form>
